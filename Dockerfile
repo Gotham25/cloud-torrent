@@ -54,7 +54,7 @@ COPY --from=builder /usr/local/bin/cloud-torrent /usr/local/bin/cloud-torrent
 RUN cp /usr/local/bin/cloud-torrent .
 RUN chown -R ctuser:appgroup /app
 USER ctuser
+COPY startCloudTorrent.sh .
 RUN chmod +x cloud-torrent
 RUN chmod +x startCloudTorrent.sh && echo "Using cloud torrent version: $(cloud-torrent --version)"
 ENTRYPOINT [ "startCloudTorrent.sh" ]
-
