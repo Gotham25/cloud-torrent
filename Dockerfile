@@ -51,10 +51,10 @@ RUN apk --no-cache add ca-certificates curl zip tar bzip2 gzip vim bash
 RUN addgroup -S appgroup && adduser -S ctuser -G appgroup
 WORKDIR /app
 COPY --from=builder /usr/local/bin/cloud-torrent /usr/local/bin/cloud-torrent
+COPY startCloudTorrent.sh .
 RUN cp /usr/local/bin/cloud-torrent .
 RUN chown -R ctuser:appgroup /app
 USER ctuser
-COPY startCloudTorrent.sh .
 RUN chmod +x cloud-torrent
 RUN chmod +x startCloudTorrent.sh && echo "Using cloud torrent version: $(cloud-torrent --version)"
 ENTRYPOINT [ "startCloudTorrent.sh" ]
