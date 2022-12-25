@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:edge AS builder
 LABEL maintainer="dev@jpillora.com"
 # prepare go env
 ENV GOPATH /go
@@ -25,6 +25,8 @@ RUN set -ex \
 	git \
 	go \
 	curl \
+        patch \
+        && go env -w GO111MODULE=off \
 	&& curl -s https://raw.githubusercontent.com/docker-library/golang/221ee92559f2963c1fe55646d3516f5b8f4c91a4/1.9/alpine3.6/no-pic.patch -o /no-pic.patch \
 	&& cat /no-pic.patch \
 	&& export GOROOT_BOOTSTRAP="$(go env GOROOT)" \
@@ -41,5 +43,17 @@ RUN set -ex \
 	&& go build -ldflags "-X main.VERSION=$(git describe --abbrev=0 --tags)" -o /usr/local/bin/$NAME \
 	&& apk del .build-deps \
 	&& rm -rf /no-pic.patch $GOPATH /usr/local/go
-#run!
-ENTRYPOINT ["cloud-torrent"]
+# run!
+# ENTRYPOINT ["cloud-torrent"]
+
+FROM alpine:edge
+RUN apk --no-cache add ca-certificates curl zip tar bzip2 gzip vim bash
+RUN addgroup -S appgroup && adduser -S ctuser -G appgroup
+WORKDIR /app
+COPY --from=builder /usr/local/bin/cloud-torrent .
+RUN chown -R ctuser:appgroup /app
+USER ctuser
+RUN chmod +x cloud-torrent && cp cloud-torrent /usr/local/bin/cloud-torrent
+RUN chmod +x startCloudTorrent.sh && echo "Using cloud torrent version: $(cloud-torrent --version)"
+ENTRYPOINT [ "startCloudTorrent.sh" ]
+
