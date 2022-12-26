@@ -45,7 +45,6 @@ RUN set -ex \
 	&& rm -rf /no-pic.patch $GOPATH /usr/local/go
 # run!
 # ENTRYPOINT ["cloud-torrent"]
-
 FROM alpine:edge
 RUN apk --no-cache add ca-certificates curl zip tar bzip2 gzip vim bash
 RUN addgroup -S appgroup && adduser -S ctuser -G appgroup
@@ -57,4 +56,5 @@ RUN chown -R ctuser:appgroup /app
 USER ctuser
 RUN chmod +x cloud-torrent
 RUN chmod +x startCloudTorrent.sh && echo "Using cloud torrent version: $(cloud-torrent --version)"
+EXPOSE 3000
 CMD [ "bash", "startCloudTorrent.sh" ]
