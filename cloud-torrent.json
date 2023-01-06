@@ -1,0 +1,19 @@
+{
+  "allowruntimeconfigure": true,
+  "autostart": true,
+  "disableencryption": true,
+  "disableutp": false,
+  "donecmd": "",
+  "downloaddirectory": "/tmp/Downloads",
+  "enableseeding": true,
+  "enableupload": true,
+  "incomingport": 50007,
+  "maxconcurrenttask": 0,
+  "nodefaultportforwarding": true,
+  "obfspreferred": true,
+  "obfsrequirepreferred": false,
+  "proxyurl": "",
+  "seedratio": 0,
+  "seedtime": "0",
+  "watchdirectory": "/tmp/torrents"
+}
