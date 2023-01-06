@@ -27,4 +27,7 @@ fi
 
 echo -e "Starting cloud torrent...\n"
 
-${CLOUD_TORRENT_BINARY} ${PORT_OPT} ${AUTHENTICATION_OPT}
+mkdir -p /tmp/torrents
+mkdir -p /tmp/Downloads
+
+${CLOUD_TORRENT_BINARY} --log --config-path cloud-torrent.json ${PORT_OPT} ${AUTHENTICATION_OPT}
