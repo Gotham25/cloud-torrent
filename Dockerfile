@@ -43,18 +43,18 @@ RUN set -ex \
 	&& go build -ldflags "-X main.VERSION=$(git describe --abbrev=0 --tags)" -o /usr/local/bin/$NAME \
 	&& apk del .build-deps \
 	&& rm -rf /no-pic.patch $GOPATH /usr/local/go
-# run!
-# ENTRYPOINT ["cloud-torrent"]
+# Build docker image
 FROM alpine:edge
 RUN apk --no-cache add ca-certificates curl zip tar bzip2 gzip vim bash
 RUN addgroup -S appgroup && adduser -S ctuser -G appgroup
 WORKDIR /app
 COPY --from=builder /usr/local/bin/cloud-torrent /usr/local/bin/cloud-torrent
 COPY startCloudTorrent.sh .
+COPY cloud-torrent.json .
 RUN cp /usr/local/bin/cloud-torrent .
 RUN chown -R ctuser:appgroup /app
 USER ctuser
-RUN chmod +x cloud-torrent
-RUN chmod +x startCloudTorrent.sh && echo "Using cloud torrent version: $(cloud-torrent --version)"
+RUN chmod +x cloud-torrent && chmod +x startCloudTorrent.sh
+RUN export CLOUD_TORRENT_VERSION=$(cloud-torrent --version) && echo "Using cloud torrent version: ${CLOUD_TORRENT_VERSION}"
 EXPOSE 3000
 CMD [ "bash", "startCloudTorrent.sh" ]
